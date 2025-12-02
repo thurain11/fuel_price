@@ -1,8 +1,11 @@
 import 'package:market_price/builders/refresh_builder/refresh_ui_builder.dart';
+import 'package:market_price/builders/request_button/request_button_bloc.dart';
+import 'package:market_price/core/network/dio_basenetwork.dart';
 import 'package:market_price/core/ob/cities_ob.dart';
 import 'package:market_price/core/ob/fuel_wholesale_prices_list_ob.dart';
 
 import '../../builders/single_ui_builder/single_ui_builder.dart';
+import '../../core/ob/response_ob.dart';
 import '../../global.dart';
 import '../home/weekly_fuel_chart_syncfu.dart';
 
@@ -18,6 +21,62 @@ class _RetailTabState extends State<RetailTab> {
 
   var refreshKey = GlobalKey<RefreshUiBuilderState>();
 
+  RequestButtonBloc bloc = RequestButtonBloc();
+
+  initCity() async {
+    bloc.postData('city', requestType: ReqType.Get, map: {'type': '15'});
+
+    bloc.getRequestStream().listen((ResponseOb res) {
+      if (res.message == MsgState.data) {
+        print("Data --> ${res.data}");
+        print("Data --> ${res.data.runtimeType}");
+
+        Map<String, dynamic> map = res.data;
+
+        List<CitiesData> cityList = List<CitiesData>.from(
+          (map["data"] as List).map((e) => CitiesData.fromJson(e)),
+        );
+
+        CitiesData? yangonCity = cityList.firstWhere(
+          (city) =>
+              city.cityName!.contains("Yangon") ||
+              city.cityName!.contains("ရန်ကုန်"),
+          orElse: () => CitiesData(), // မတွေ့ရင် null ပြန်မယ်
+        );
+
+        print(yangonCity.cityId.toString() + " -------> ID");
+
+        if (yangonCity != null) {
+          print("တွေ့ပြီ: ${yangonCity.cityName} - ID: ${yangonCity.cityId}");
+          setState(() {
+            citiesData = yangonCity;
+          });
+          refreshKey.currentState!.func(
+            map: {
+              "city_id": yangonCity.cityId ?? "",
+              'date': _formatDate(selectedDate),
+            },
+          );
+        } else {
+          print("ရန်ကုန် မတွေ့ပါ");
+        }
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initCity();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    bloc.dispose();
+  }
+
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
@@ -32,7 +91,10 @@ class _RetailTabState extends State<RetailTab> {
     if (d != null) {
       setState(() => selectedDate = d);
       refreshKey.currentState!.func(
-        map: {"date": _formatDate(selectedDate), "city_id": ""},
+        map: {
+          "date": _formatDate(selectedDate),
+          "city_id": citiesData == null ? "" : citiesData!.cityId,
+        },
       );
     }
   }
@@ -68,7 +130,10 @@ class _RetailTabState extends State<RetailTab> {
           child: RefreshUiBuilder<FuelWholesalePricesData>(
             key: refreshKey,
             url: 'fuel-price/fuel-retail-price',
-            map: {"date": _formatDate(selectedDate), "city_id": ""},
+            map: {
+              "date": _formatDate(selectedDate),
+              "city_id": citiesData == null ? "" : citiesData!.cityId,
+            },
             childWidget: (dynamic data, RefreshLoad func, bool? isList) {
               FuelWholesalePricesData wpData = data as FuelWholesalePricesData;
 
@@ -222,7 +287,6 @@ class _RetailTabState extends State<RetailTab> {
           child: InkWell(
             onTap: () async {
               print("Hi");
-
               _showCityBottomSheet(context);
             },
             borderRadius: BorderRadius.circular(12),
@@ -233,12 +297,17 @@ class _RetailTabState extends State<RetailTab> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: const Row(
+              child: Row(
                 children: [
-                  Text(
-                    "-- City --",
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                  ),
+                  citiesData == null
+                      ? Text(
+                          "All",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                      : Text("${citiesData!.cityName}"),
                   Spacer(),
                   Icon(Icons.keyboard_arrow_down),
                 ],
@@ -332,6 +401,13 @@ class _RetailTabState extends State<RetailTab> {
                                 setState(() {});
                                 myState(() {});
                                 citiesData = city;
+                                refreshKey.currentState!.func(
+                                  map: {
+                                    "date": _formatDate(selectedDate),
+                                    "city_id": citiesData!.cityId ?? "",
+                                  },
+                                );
+                                context.back();
                               },
                               child: Container(
                                 margin: const EdgeInsets.symmetric(

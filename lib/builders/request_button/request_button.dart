@@ -466,7 +466,7 @@ class _RequestButtonState extends State<RequestButton> {
 
   @override
   void dispose() {
-    _bloc.disponse();
+    _bloc.dispose();
     super.dispose();
   }
 }

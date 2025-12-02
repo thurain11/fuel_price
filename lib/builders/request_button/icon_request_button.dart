@@ -269,7 +269,7 @@ class IconRequestButtonState extends State<IconRequestButton> {
 
   @override
   void dispose() {
-    _bloc.disponse();
+    _bloc.dispose();
     super.dispose();
   }
 }
