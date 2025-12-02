@@ -69,12 +69,14 @@ class _MarketTabsPageState extends State<MarketTabsPage>
     );
     if (d != null) {
       setState(() => selectedDate = d);
-      // TODO: Fetch retail data again
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppUtils.MyAppBar(
         context: context,
@@ -88,164 +90,253 @@ class _MarketTabsPageState extends State<MarketTabsPage>
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // TabBar
-          TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabAlignment: TabAlignment.start,
-            labelStyle: const TextStyle(fontWeight: FontWeight.w600),
-            unselectedLabelColor: Colors.grey,
-            labelColor: Theme.of(context).primaryColor,
-            indicatorColor: Theme.of(context).primaryColor,
-            dividerColor: Colors.transparent,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-            tabs: tabs,
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            // TabBar
+            // iOS Style Segmented TabBar
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              decoration: BoxDecoration(
+                color: Colors.white, // outer background
+                borderRadius: BorderRadius.circular(8),
+              ),
 
-          // TabBarView
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                // ===== 1. Petrol (Retail) → Filter ပါတယ် =====
-                Column(
-                  children: [
-                    _buildFilterRow(), // ← ဒီမှာ ထည့်လိုက်ပြီ
-                    _buildRetailFuelCard(
-                      date: DateTime.now(),
-                      prices: {
-                        "92 Ron": 2450.0,
-                        "95 Ron": 2550.0,
-                        "HSD(500 ppm)": 2380.0,
-                        "HSD(50 ppm)": 2480.0,
-                        "HSD(10 ppm)": 2480.0,
-                      },
-                    ),
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                dividerColor: Colors.transparent,
 
-                    SizedBox(
-                      height: 260,
-                      child: Card(
-                        child: FuelChartDynamic(
-                          prices: {
-                            "92 Ron": [2320, 2470, 2450, 2460, 2360],
-                            "95 Ron": [2550, 2510, 2570, 2560, 2520],
-                            "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
-                            "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
-                            "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
-                          },
+                // iOS Colors
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black45,
 
-                          dateLabels: [
-                            "25 Jan",
-                            "26 Jan",
-                            "27 Jan",
-                            "28 Jan",
-                            "29 Jan",
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // SizedBox(
-                    //   height: 220,
-                    //   child: WeeklyFuelChart(
-                    //     weeklyPrices: {
-                    //       "92 Ron": [2400, 2420, 2410, 2430, 2450, 2460, 2450],
-                    //       "95 Ron": [2500, 2520, 2510, 2530, 2550, 2560, 2550],
-                    //       "HSD(500 ppm)": [
-                    //         2300,
-                    //         2310,
-                    //         2320,
-                    //         2330,
-                    //         2340,
-                    //         2350,
-                    //         2380,
-                    //       ],
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
-
-                Column(
-                  children: [
-                    _buildFilterRow(), // ← ဒီမှာ ထည့်လိုက်ပြီ
-                    _buildRetailFuelCard(
-                      date: DateTime.now(),
-                      prices: {
-                        "92 Ron": 2450.0,
-                        "95 Ron": 2550.0,
-                        "HSD(500 ppm)": 2380.0,
-                        "HSD(50 ppm)": 2480.0,
-                        "HSD(10 ppm)": 2480.0,
-                      },
-                    ),
-
-                    SizedBox(
-                      height: 260,
-                      child: Card(
-                        child: FuelChartDynamic(
-                          prices: {
-                            "92 Ron": [2320, 2470, 2450, 2460, 2360],
-                            "95 Ron": [2550, 2510, 2570, 2560, 2520],
-                            "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
-                            "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
-                            "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
-                          },
-
-                          dateLabels: [
-                            "25 Jan",
-                            "26 Jan",
-                            "27 Jan",
-                            "28 Jan",
-                            "29 Jan",
-                          ],
-                        ),
-                      ),
+                // iOS Segmented Indicator
+                indicator: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withValues(alpha: 0.10),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
 
-                // ===== 3. MOPS Price =====
-                Column(
-                  children: [
-                    _buildFilterRowMops(), // ← ဒီမှာ ထည့်လိုက်ပြီ
-                    _mopsCard(
-                      date: DateTime.now(),
-                      prices: {
-                        "Mops(92 Ron)": 78.30,
-                        "Mops(95 Ron)": 81.16,
-                        "Mops(10 ppm)": 86.30,
-                      },
+                indicatorSize: TabBarIndicatorSize.tab,
+
+                labelPadding: const EdgeInsets.symmetric(horizontal: 5),
+                tabAlignment: TabAlignment.start,
+
+                tabs: tabs.map((tab) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 6,
+                      horizontal: 12,
                     ),
-
-                    SizedBox(
-                      height: 260,
-                      child: Card(
-                        child: FuelChartDynamic(
-                          prices: {
-                            "Mops(92 Ron)": [78.30, 77.20, 78.90, 76.50, 77.20],
-                            "Mops(95 Ron)": [81.16, 82.20, 83.90, 81.50, 82.20],
-                            "Mops(10 ppm)": [86.30, 87.20, 85.90, 84.50, 88.20],
-                          },
-
-                          dateLabels: [
-                            "25 Jan",
-                            "26 Jan",
-                            "27 Jan",
-                            "28 Jan",
-                            "29 Jan",
-                          ],
-                        ),
+                    child: Text(
+                      tab.text!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 9),
+
+            // TabBarView
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  // ===== 1. Petrol (Retail) → Filter ပါတယ် =====
+                  Column(
+                    children: [
+                      _buildFilterRow(),
+                      SizedBox(height: 8),
+                      _buildRetailFuelCard(
+                        date: DateTime.now(),
+                        prices: {
+                          "92 Ron": 2450.0,
+                          "95 Ron": 2550.0,
+                          "HSD(500 ppm)": 2380.0,
+                          "HSD(50 ppm)": 2480.0,
+                          "HSD(10 ppm)": 2480.0,
+                        },
+                      ),
+                      SizedBox(height: 10),
+
+                      SizedBox(
+                        height: 260,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isDark
+                                    ? Colors.black.withValues(alpha: 0.35)
+                                    : Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: FuelChartDynamic(
+                            prices: {
+                              "92 Ron": [2320, 2470, 2450, 2460, 2360],
+                              "95 Ron": [2550, 2510, 2570, 2560, 2520],
+                              "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
+                              "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
+                              "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
+                            },
+
+                            dateLabels: [
+                              "25 Jan",
+                              "26 Jan",
+                              "27 Jan",
+                              "28 Jan",
+                              "29 Jan",
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Column(
+                    children: [
+                      _buildFilterRow(),
+                      SizedBox(height: 8),
+                      _buildRetailFuelCard(
+                        date: DateTime.now(),
+                        prices: {
+                          "92 Ron": 2450.0,
+                          "95 Ron": 2550.0,
+                          "HSD(500 ppm)": 2380.0,
+                          "HSD(50 ppm)": 2480.0,
+                          "HSD(10 ppm)": 2480.0,
+                        },
+                      ),
+                      SizedBox(height: 10),
+
+                      SizedBox(
+                        height: 260,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isDark
+                                    ? Colors.black.withValues(alpha: 0.35)
+                                    : Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: FuelChartDynamic(
+                            prices: {
+                              "92 Ron": [2320, 2470, 2450, 2460, 2360],
+                              "95 Ron": [2550, 2510, 2570, 2560, 2520],
+                              "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
+                              "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
+                              "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
+                            },
+
+                            dateLabels: [
+                              "25 Jan",
+                              "26 Jan",
+                              "27 Jan",
+                              "28 Jan",
+                              "29 Jan",
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // ===== 3. MOPS Price =====
+                  Column(
+                    children: [
+                      _buildFilterRowMops(),
+                      SizedBox(height: 8),
+
+                      _mopsCard(
+                        date: DateTime.now(),
+                        prices: {
+                          "Mops(92 Ron)": 78.30,
+                          "Mops(95 Ron)": 81.16,
+                          "Mops(10 ppm)": 86.30,
+                        },
+                      ),
+                      SizedBox(height: 10),
+
+                      SizedBox(
+                        height: 260,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isDark
+                                    ? Colors.black.withValues(alpha: 0.35)
+                                    : Colors.black.withValues(alpha: 0.06),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: FuelChartDynamic(
+                            prices: {
+                              "Mops(92 Ron)": [
+                                78.30,
+                                77.20,
+                                78.90,
+                                76.50,
+                                77.20,
+                              ],
+                              "Mops(95 Ron)": [
+                                81.16,
+                                82.20,
+                                83.90,
+                                81.50,
+                                82.20,
+                              ],
+                              "Mops(10 ppm)": [
+                                86.30,
+                                87.20,
+                                85.90,
+                                84.50,
+                                88.20,
+                              ],
+                            },
+
+                            dateLabels: [
+                              "25 Jan",
+                              "26 Jan",
+                              "27 Jan",
+                              "28 Jan",
+                              "29 Jan",
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -258,25 +349,6 @@ class _MarketTabsPageState extends State<MarketTabsPage>
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     // final bool isToday = date.isSameDate(DateTime.now());
-
-    // String formatDate() {
-    //   const months = [
-    //     "",
-    //     "Jan",
-    //     "Feb",
-    //     "Mar",
-    //     "Apr",
-    //     "May",
-    //     "Jun",
-    //     "Jul",
-    //     "Aug",
-    //     "Sep",
-    //     "Oct",
-    //     "Nov",
-    //     "Dec",
-    //   ];
-    //   return "${date.day} ${months[date.month]} ${date.year}";
-    // }
 
     Widget _fuelRow(String name, double price) {
       return Padding(
@@ -323,7 +395,6 @@ class _MarketTabsPageState extends State<MarketTabsPage>
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -410,7 +481,6 @@ class _MarketTabsPageState extends State<MarketTabsPage>
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
@@ -444,124 +514,106 @@ class _MarketTabsPageState extends State<MarketTabsPage>
   }
 
   Widget _buildFilterRow() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: InkWell(
-              onTap: pickDate,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.calendar_today_outlined, size: 18),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${selectedDate.day}, ${_month(selectedDate.month)} ${selectedDate.year}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: InkWell(
+            onTap: pickDate,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today_outlined, size: 18),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${selectedDate.day}, ${_month(selectedDate.month)} ${selectedDate.year}",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const Spacer(),
-                    const Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.keyboard_arrow_down),
+                ],
               ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            flex: 2,
-            child: InkWell(
-              onTap: () {
-                // TODO: City picker dialog
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("City picker coming soon!")),
-                );
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: const Row(
-                  children: [
-                    Text(
-                      "-- City --",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Spacer(),
-                    Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          flex: 2,
+          child: InkWell(
+            onTap: () {
+              // TODO: City picker dialog
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("City picker coming soon!")),
+              );
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: const Row(
+                children: [
+                  Text(
+                    "-- City --",
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                  ),
+                  Spacer(),
+                  Icon(Icons.keyboard_arrow_down),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildFilterRowMops() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: pickDate,
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 14,
-                  horizontal: 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.calendar_today_outlined, size: 18),
-                    const SizedBox(width: 10),
-                    Text(
-                      "${selectedDate.day}, ${_month(selectedDate.month)} ${selectedDate.year}",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: pickDate,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today_outlined, size: 18),
+                  const SizedBox(width: 10),
+                  Text(
+                    "${selectedDate.day}, ${_month(selectedDate.month)} ${selectedDate.year}",
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const Spacer(),
-                    const Icon(Icons.keyboard_arrow_down),
-                  ],
-                ),
+                  ),
+                  const Spacer(),
+                  const Icon(Icons.keyboard_arrow_down),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
