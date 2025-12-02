@@ -36,6 +36,7 @@ class DioBaseNetwork {
       "operating-system": os,
       "gen-ios": GEN_NUMBER_IOS,
       "gen-android": GEN_NUMBER_ANDROID,
+      "secret-token": SECRET_TOKEN,
       // "X-Socket-ID": "456928633.667692454",
       // "guard-token": await SharedPref.getData(key: SharedPref.gift_token),
       "User-Agent": await SharedPref.getData(key: SharedPref.user_agent),

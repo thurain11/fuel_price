@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:market_price/core/utils/app_utils.dart';
 import 'package:market_price/core/utils/context_ext.dart';
-import 'package:market_price/pages/home/weekly_fuel_chart_syncfu.dart';
+import 'package:market_price/pages/tabs/retail_tab.dart';
 
+import '../tabs/wholesale_tab.dart';
 import 'line_chart.dart';
 
 extension DateOnlyCompare on DateTime {
@@ -11,14 +12,14 @@ extension DateOnlyCompare on DateTime {
   }
 }
 
-class MarketTabsPage extends StatefulWidget {
-  const MarketTabsPage({super.key});
+class MainTabsPage extends StatefulWidget {
+  const MainTabsPage({super.key});
 
   @override
-  State<MarketTabsPage> createState() => _MarketTabsPageState();
+  State<MainTabsPage> createState() => _MainTabsPageState();
 }
 
-class _MarketTabsPageState extends State<MarketTabsPage>
+class _MainTabsPageState extends State<MainTabsPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   DateTime selectedDate = DateTime.now();
@@ -154,184 +155,79 @@ class _MarketTabsPageState extends State<MarketTabsPage>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  // ===== 1. Petrol (Retail) → Filter ပါတယ် =====
-                  Column(
-                    children: [
-                      _buildFilterRow(),
-                      SizedBox(height: 8),
-                      _buildRetailFuelCard(
-                        date: DateTime.now(),
-                        prices: {
-                          "92 Ron": 2450.0,
-                          "95 Ron": 2550.0,
-                          "HSD(500 ppm)": 2380.0,
-                          "HSD(50 ppm)": 2480.0,
-                          "HSD(10 ppm)": 2480.0,
-                        },
-                      ),
-                      SizedBox(height: 10),
+                  // ===== 1. Petrol (Wholesale) → Filter ပါတယ် =====
+                  WholesaleTab(),
+                  RetailTab(),
+                  Container(),
 
-                      SizedBox(
-                        height: 260,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: [
-                              BoxShadow(
-                                color: isDark
-                                    ? Colors.black.withValues(alpha: 0.35)
-                                    : Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: FuelChartDynamic(
-                            prices: {
-                              "92 Ron": [2320, 2470, 2450, 2460, 2360],
-                              "95 Ron": [2550, 2510, 2570, 2560, 2520],
-                              "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
-                              "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
-                              "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
-                            },
-
-                            dateLabels: [
-                              "25 Jan",
-                              "26 Jan",
-                              "27 Jan",
-                              "28 Jan",
-                              "29 Jan",
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Column(
-                    children: [
-                      _buildFilterRow(),
-                      SizedBox(height: 8),
-                      _buildRetailFuelCard(
-                        date: DateTime.now(),
-                        prices: {
-                          "92 Ron": 2450.0,
-                          "95 Ron": 2550.0,
-                          "HSD(500 ppm)": 2380.0,
-                          "HSD(50 ppm)": 2480.0,
-                          "HSD(10 ppm)": 2480.0,
-                        },
-                      ),
-                      SizedBox(height: 10),
-
-                      SizedBox(
-                        height: 260,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: [
-                              BoxShadow(
-                                color: isDark
-                                    ? Colors.black.withValues(alpha: 0.35)
-                                    : Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: FuelChartDynamic(
-                            prices: {
-                              "92 Ron": [2320, 2470, 2450, 2460, 2360],
-                              "95 Ron": [2550, 2510, 2570, 2560, 2520],
-                              "HSD 500ppm": [2310, 2350, 2330, 2410, 2390],
-                              "HSD 50ppm": [2210, 2237, 2430, 2310, 2210],
-                              "HSD 10ppm": [2210, 2390, 2350, 2380, 2410],
-                            },
-
-                            dateLabels: [
-                              "25 Jan",
-                              "26 Jan",
-                              "27 Jan",
-                              "28 Jan",
-                              "29 Jan",
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // ===== 3. MOPS Price =====
-                  Column(
-                    children: [
-                      _buildFilterRowMops(),
-                      SizedBox(height: 8),
-
-                      _mopsCard(
-                        date: DateTime.now(),
-                        prices: {
-                          "Mops(92 Ron)": 78.30,
-                          "Mops(95 Ron)": 81.16,
-                          "Mops(10 ppm)": 86.30,
-                        },
-                      ),
-                      SizedBox(height: 10),
-
-                      SizedBox(
-                        height: 260,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surface,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: [
-                              BoxShadow(
-                                color: isDark
-                                    ? Colors.black.withValues(alpha: 0.35)
-                                    : Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: FuelChartDynamic(
-                            prices: {
-                              "Mops(92 Ron)": [
-                                78.30,
-                                77.20,
-                                78.90,
-                                76.50,
-                                77.20,
-                              ],
-                              "Mops(95 Ron)": [
-                                81.16,
-                                82.20,
-                                83.90,
-                                81.50,
-                                82.20,
-                              ],
-                              "Mops(10 ppm)": [
-                                86.30,
-                                87.20,
-                                85.90,
-                                84.50,
-                                88.20,
-                              ],
-                            },
-
-                            dateLabels: [
-                              "25 Jan",
-                              "26 Jan",
-                              "27 Jan",
-                              "28 Jan",
-                              "29 Jan",
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   children: [
+                  //     _buildFilterRowMops(),
+                  //     SizedBox(height: 8),
+                  //
+                  //     _mopsCard(
+                  //       date: DateTime.now(),
+                  //       prices: {
+                  //         "Mops(92 Ron)": 78.30,
+                  //         "Mops(95 Ron)": 81.16,
+                  //         "Mops(10 ppm)": 86.30,
+                  //       },
+                  //     ),
+                  //     SizedBox(height: 10),
+                  //
+                  //     SizedBox(
+                  //       height: 260,
+                  //       child: Container(
+                  //         decoration: BoxDecoration(
+                  //           color: theme.colorScheme.surface,
+                  //           borderRadius: BorderRadius.circular(18),
+                  //           boxShadow: [
+                  //             BoxShadow(
+                  //               color: isDark
+                  //                   ? Colors.black.withValues(alpha: 0.35)
+                  //                   : Colors.black.withValues(alpha: 0.06),
+                  //               blurRadius: 8,
+                  //               offset: const Offset(0, 4),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         child: FuelChartDynamic(
+                  //           prices: {
+                  //             "Mops(92 Ron)": [
+                  //               78.30,
+                  //               77.20,
+                  //               78.90,
+                  //               76.50,
+                  //               77.20,
+                  //             ],
+                  //             "Mops(95 Ron)": [
+                  //               81.16,
+                  //               82.20,
+                  //               83.90,
+                  //               81.50,
+                  //               82.20,
+                  //             ],
+                  //             "Mops(10 ppm)": [
+                  //               86.30,
+                  //               87.20,
+                  //               85.90,
+                  //               84.50,
+                  //               88.20,
+                  //             ],
+                  //           },
+                  //
+                  //           dateLabels: [
+                  //             "25 Jan",
+                  //             "26 Jan",
+                  //             "27 Jan",
+                  //             "28 Jan",
+                  //             "29 Jan",
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),

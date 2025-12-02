@@ -94,66 +94,62 @@ class FuelRetailPricesData {
     data['hsd_500_ppm_price'] = this.hsd500PpmPrice;
     data['hsd_50_ppm_price'] = this.hsd50PpmPrice;
     data['hsd_10_ppm_price'] = this.hsd10PpmPrice;
-    if (this.chart != null) {
-      data['chart'] = this.chart!.toJson();
-    }
+
     return data;
   }
 }
 
 class Chart {
   List<String>? labels;
-  Datasets? datasets;
+  Map<String, List<int>>? datasets;
 
   Chart({this.labels, this.datasets});
 
-  Chart.fromJson(Map<String, dynamic> json) {
-    labels = json['labels'].cast<String>();
-    datasets = json['datasets'] != null
-        ? new Datasets.fromJson(json['datasets'])
-        : null;
-  }
+  factory Chart.fromJson(Map<String, dynamic> json) {
+    final rawDatasets = json['datasets'] as Map<String, dynamic>? ?? {};
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['labels'] = this.labels;
-    if (this.datasets != null) {
-      data['datasets'] = this.datasets!.toJson();
-    }
-    return data;
+    final Map<String, List<int>> parsed = rawDatasets.map((key, value) {
+      final list = (value as List).cast<int>();
+      return MapEntry(key, list);
+    });
+
+    return Chart(
+      labels: (json['labels'] as List).cast<String>(),
+      datasets: parsed,
+    );
   }
 }
 
-class Datasets {
-  List<int>? l92Ron;
-  List<int>? l95Ron;
-  List<int>? hSD500Ppm;
-  List<int>? hSD50Ppm;
-  List<int>? hSD10Ppm;
-
-  Datasets({
-    this.l92Ron,
-    this.l95Ron,
-    this.hSD500Ppm,
-    this.hSD50Ppm,
-    this.hSD10Ppm,
-  });
-
-  Datasets.fromJson(Map<String, dynamic> json) {
-    l92Ron = json['92 Ron'].cast<int>();
-    l95Ron = json['95 Ron'].cast<int>();
-    hSD500Ppm = json['HSD (500 ppm)'].cast<int>();
-    hSD50Ppm = json['HSD (50 ppm)'].cast<int>();
-    hSD10Ppm = json['HSD (10 ppm)'].cast<int>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['92 Ron'] = this.l92Ron;
-    data['95 Ron'] = this.l95Ron;
-    data['HSD (500 ppm)'] = this.hSD500Ppm;
-    data['HSD (50 ppm)'] = this.hSD50Ppm;
-    data['HSD (10 ppm)'] = this.hSD10Ppm;
-    return data;
-  }
-}
+// class Datasets {
+//   List<int>? l92Ron;
+//   List<int>? l95Ron;
+//   List<int>? hSD500Ppm;
+//   List<int>? hSD50Ppm;
+//   List<int>? hSD10Ppm;
+//
+//   Datasets({
+//     this.l92Ron,
+//     this.l95Ron,
+//     this.hSD500Ppm,
+//     this.hSD50Ppm,
+//     this.hSD10Ppm,
+//   });
+//
+//   Datasets.fromJson(Map<String, dynamic> json) {
+//     l92Ron = json['92 Ron'].cast<int>();
+//     l95Ron = json['95 Ron'].cast<int>();
+//     hSD500Ppm = json['HSD (500 ppm)'].cast<int>();
+//     hSD50Ppm = json['HSD (50 ppm)'].cast<int>();
+//     hSD10Ppm = json['HSD (10 ppm)'].cast<int>();
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     final Map<String, dynamic> data = new Map<String, dynamic>();
+//     data['92 Ron'] = this.l92Ron;
+//     data['95 Ron'] = this.l95Ron;
+//     data['HSD (500 ppm)'] = this.hSD500Ppm;
+//     data['HSD (50 ppm)'] = this.hSD50Ppm;
+//     data['HSD (10 ppm)'] = this.hSD10Ppm;
+//     return data;
+//   }
+// }

@@ -9,7 +9,7 @@ import '../core/providers/bottom_navi_index_provider.dart';
 import '../core/providers/login_provider.dart';
 import '../core/theme/app_theme.dart';
 import '../main.dart';
-import 'home/tab_page.dart';
+import 'home/main_tab_page.dart';
 
 class MyApp extends StatelessWidget {
   @override
@@ -83,6 +83,6 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MarketTabsPage();
+    return MainTabsPage();
   }
 }
