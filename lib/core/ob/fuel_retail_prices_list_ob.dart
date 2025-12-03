@@ -101,15 +101,15 @@ class FuelRetailPricesData {
 
 class Chart {
   List<String>? labels;
-  Map<String, List<int>>? datasets;
+  Map<String, List<num>>? datasets;
 
   Chart({this.labels, this.datasets});
 
   factory Chart.fromJson(Map<String, dynamic> json) {
     final rawDatasets = json['datasets'] as Map<String, dynamic>? ?? {};
 
-    final Map<String, List<int>> parsed = rawDatasets.map((key, value) {
-      final list = (value as List).cast<int>();
+    final Map<String, List<num>> parsed = rawDatasets.map((key, value) {
+      final list = (value as List).cast<num>();
       return MapEntry(key, list);
     });
 

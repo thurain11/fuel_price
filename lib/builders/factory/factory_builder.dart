@@ -1,6 +1,7 @@
 import '../../core/ob/cities_ob.dart';
 import '../../core/ob/fuel_retail_prices_list_ob.dart';
 import '../../core/ob/fuel_wholesale_prices_list_ob.dart';
+import '../../core/ob/mops_price_list_ob.dart';
 
 final objectFactories = <Type, Function>{
   CitiesData: (Map<String, dynamic> m) => CitiesData.fromJson(m),
@@ -8,4 +9,5 @@ final objectFactories = <Type, Function>{
       FuelRetailPricesData.fromJson(m),
   FuelWholesalePricesData: (Map<String, dynamic> m) =>
       FuelWholesalePricesData.fromJson(m),
+  MOPSPriceData: (Map<String, dynamic> m) => MOPSPriceData.fromJson(m),
 };

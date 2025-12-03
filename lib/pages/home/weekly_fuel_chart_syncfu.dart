@@ -30,7 +30,7 @@ class FuelChartDynamic extends StatelessWidget {
         legend: const Legend(isVisible: true, position: LegendPosition.top),
         primaryXAxis: const CategoryAxis(
           majorGridLines: MajorGridLines(width: 0),
-          labelRotation: -45,
+          labelRotation: -30,
         ),
 
         tooltipBehavior: TooltipBehavior(enable: true, shared: true),
@@ -46,6 +46,10 @@ class FuelChartDynamic extends StatelessWidget {
       'HSD (500 ppm)': Colors.blue.shade700,
       'HSD (50 ppm)': Colors.purple.shade600,
       'HSD (10 ppm)': Colors.red.shade700,
+
+      'MOPS (92 Ron)': Colors.blue.shade700,
+      'MOPS (95 Ron)': Colors.purple.shade600,
+      'MOPS (10 ppm)': Colors.red.shade700,
     };
 
     return chartData!.datasets!.entries.map((entry) {
@@ -74,6 +78,6 @@ class FuelChartDynamic extends StatelessWidget {
 
 class _Point {
   final String label;
-  final double value;
+  final num value;
   const _Point(this.label, this.value);
 }

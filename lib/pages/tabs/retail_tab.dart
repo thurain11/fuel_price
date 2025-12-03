@@ -2,9 +2,10 @@ import 'package:market_price/builders/refresh_builder/refresh_ui_builder.dart';
 import 'package:market_price/builders/request_button/request_button_bloc.dart';
 import 'package:market_price/core/network/dio_basenetwork.dart';
 import 'package:market_price/core/ob/cities_ob.dart';
-import 'package:market_price/core/ob/fuel_wholesale_prices_list_ob.dart';
+import 'package:market_price/widgets/my_card.dart';
 
 import '../../builders/single_ui_builder/single_ui_builder.dart';
+import '../../core/ob/fuel_retail_prices_list_ob.dart';
 import '../../core/ob/response_ob.dart';
 import '../../global.dart';
 import '../home/weekly_fuel_chart_syncfu.dart';
@@ -99,25 +100,6 @@ class _RetailTabState extends State<RetailTab> {
     }
   }
 
-  // String _month(int m) {
-  //   const names = [
-  //     "",
-  //     "Jan",
-  //     "Feb",
-  //     "Mar",
-  //     "Apr",
-  //     "May",
-  //     "Jun",
-  //     "Jul",
-  //     "Aug",
-  //     "Sep",
-  //     "Oct",
-  //     "Nov",
-  //     "Dec",
-  //   ];
-  //   return names[m];
-  // }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -127,7 +109,7 @@ class _RetailTabState extends State<RetailTab> {
       children: [
         _buildFilterRow(),
         Expanded(
-          child: RefreshUiBuilder<FuelWholesalePricesData>(
+          child: RefreshUiBuilder<FuelRetailPricesData>(
             key: refreshKey,
             url: 'fuel-price/fuel-retail-price',
             map: {
@@ -135,7 +117,7 @@ class _RetailTabState extends State<RetailTab> {
               "city_id": citiesData == null ? "" : citiesData!.cityId,
             },
             childWidget: (dynamic data, RefreshLoad func, bool? isList) {
-              FuelWholesalePricesData wpData = data as FuelWholesalePricesData;
+              FuelRetailPricesData wpData = data as FuelRetailPricesData;
 
               return Column(
                 children: [
@@ -150,26 +132,16 @@ class _RetailTabState extends State<RetailTab> {
     );
   }
 
-  Widget _buildRetailFuelCard({required FuelWholesalePricesData data}) {
+  Widget _buildRetailFuelCard({required FuelRetailPricesData data}) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     // final bool isToday = date.isSameDate(DateTime.now());
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 14),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.35)
-                : Colors.black.withValues(alpha: 0.06),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return MyCard(
+      ph: 14,
+      pv: 8,
+      mh: 2,
+      mt: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -225,7 +197,6 @@ class _RetailTabState extends State<RetailTab> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.black87, // dark mode မှာလည်း ကြည်လင်အောင်
                     ),
                   ),
                   const WidgetSpan(child: SizedBox(width: 4)), // space လေး
@@ -286,7 +257,6 @@ class _RetailTabState extends State<RetailTab> {
           flex: 2,
           child: InkWell(
             onTap: () async {
-              print("Hi");
               _showCityBottomSheet(context);
             },
             borderRadius: BorderRadius.circular(12),
@@ -307,8 +277,12 @@ class _RetailTabState extends State<RetailTab> {
                             fontWeight: FontWeight.w500,
                           ),
                         )
-                      : Text("${citiesData!.cityName}"),
-                  Spacer(),
+                      : Expanded(
+                          child: Text(
+                            "${citiesData!.cityName}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                   Icon(Icons.keyboard_arrow_down),
                 ],
               ),

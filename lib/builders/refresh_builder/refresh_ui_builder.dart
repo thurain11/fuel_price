@@ -1,4 +1,3 @@
-import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../core/network/dio_basenetwork.dart';
@@ -340,11 +339,11 @@ class RefreshUiBuilderState<T> extends State<RefreshUiBuilder>
                                       children: <Widget>[
                                         SizedBox(height: size.height * 0.20),
                                         Container(
-                                          child: Lottie.asset(
-                                            'assets/anim/empty_data.json',
+                                          child: Image.asset(
+                                            'assets/images/no_data.png',
                                           ),
-                                          width: 170,
-                                          height: 170,
+                                          width: 120,
+                                          height: 120,
                                         ),
                                         SizedBox(height: 10.0),
                                         Text(

@@ -9,6 +9,7 @@ import '../../core/utils/app_utils.dart';
 import '../../global.dart';
 import '../../widgets/icon_lavel_widget.dart';
 import '../../widgets/my_card.dart';
+import 'language_page/language_page.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -48,7 +49,7 @@ class _SettingPageState extends State<SettingPage> {
                 ),
                 myListTileWidget(
                   leading: IconLabelWidget(iconName: CupertinoIcons.globe),
-                  // onTap: () => context.to(LanguagePage()),
+                  onTap: () => context.to(LanguagePage()),
                   title: context.tr('language'),
                   trailing: Icon(CupertinoIcons.right_chevron, size: 16),
                 ),
@@ -96,27 +97,6 @@ class _SettingPageState extends State<SettingPage> {
                     // color: Colors.grey,
                   ),
                 ),
-                // myListTileWidget(
-                //   leading: IconWidget(iconName: LineIcons.commentDotsAlt),
-                //   onTap: () => context.to(CustomerServicesPage()),
-                //   title: AppTranslations.of(context)!.trans('service'),
-                //   trailing: Icon(
-                //     CupertinoIcons.right_chevron,
-                //     size: 16,
-                //   ),
-                // ),
-                // myListTileWidget(
-                //   leading: IconWidget(iconName: LineIcons.commentDotsAlt),
-                //   onTap: () {
-                //     // LaunchMethods.sendEmail("info@starfishmyanmar.com", context);
-                //   },
-                //   // onTap: () => context.to(LanguagePage()),
-                //   title: AppTranslations.of(context)!.trans('partnership'),
-                //   trailing: Icon(
-                //     CupertinoIcons.right_chevron,
-                //     size: 16,
-                //   ),
-                // ),
                 myListTileWidget(
                   leading: IconLabelWidget(
                     iconName: CupertinoIcons.doc_plaintext,
