@@ -5,7 +5,7 @@ import 'package:market_price/widgets/my_card.dart';
 import '../../builders/single_ui_builder/single_ui_builder.dart';
 import '../../core/ob/mops_price_list_ob.dart';
 import '../../global.dart';
-import '../home/weekly_fuel_chart_syncfu.dart';
+import '../home/fl_chart_dynamic.dart';
 
 class MOPSTab extends StatefulWidget {
   const MOPSTab({super.key});
@@ -98,7 +98,12 @@ class _MOPSTabState extends State<MOPSTab> {
           _fuelRow("95 Ron", data.mopsRon95Price ?? "0"),
           _fuelRow("HSD(10 ppm)", data.mops10PpmPrice ?? "0"),
           SizedBox(height: 10),
-          FuelChartDynamic(chartData: data.chart),
+          // FuelChartDynamic(chartData: data.chart),
+          SizedBox(
+            height: 300,
+            width: MediaQuery.of(context).size.width,
+            child: FuelChartDynamicFL(chartData: data.chart),
+          ),
         ],
       ),
     );

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: BuildThemeData.lightTheme,
             darkTheme: BuildThemeData.darkTheme,
-            title: '',
+            title: 'Fuel Price',
             home: RootPage(),
           );
         },

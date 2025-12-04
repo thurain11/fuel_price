@@ -147,7 +147,7 @@ class AppUtils {
       child: AppBar(
         surfaceTintColor: Colors.transparent,
         actionsIconTheme: IconThemeData(
-          color: appBarTheme.actionsIconTheme?.color ?? theme.primaryColor,
+          // color: appBarTheme.actionsIconTheme?.color ?? theme.primaryColor,
         ),
         backgroundColor:
             color ??
@@ -172,10 +172,11 @@ class AppUtils {
             Text(
               title!,
               style: TextStyle(
-                color:
-                    textColor ??
-                    theme.primaryColor ??
-                    theme.textTheme.headlineSmall?.color,
+                // color:
+                //     textColor ??
+                //     theme.primaryColor
+                //         ??
+                //     theme.textTheme.headlineSmall?.color,
                 fontSize: fontSize,
                 fontWeight: fontWeight,
               ),

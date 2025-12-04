@@ -9,7 +9,6 @@ import '../../core/utils/app_utils.dart';
 import '../../global.dart';
 import '../../widgets/icon_lavel_widget.dart';
 import '../../widgets/my_card.dart';
-import 'language_page/language_page.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -47,12 +46,12 @@ class _SettingPageState extends State<SettingPage> {
                     // color: Colors.grey,
                   ),
                 ),
-                myListTileWidget(
-                  leading: IconLabelWidget(iconName: CupertinoIcons.globe),
-                  onTap: () => context.to(LanguagePage()),
-                  title: context.tr('language'),
-                  trailing: Icon(CupertinoIcons.right_chevron, size: 16),
-                ),
+                // myListTileWidget(
+                //   leading: IconLabelWidget(iconName: CupertinoIcons.globe),
+                //   onTap: () => context.to(LanguagePage()),
+                //   title: context.tr('language'),
+                //   trailing: Icon(CupertinoIcons.right_chevron, size: 16),
+                // ),
                 Consumer<ThemeProvider>(
                   builder: (con, ThemeProvider tm, child) {
                     return myListTileWidget(

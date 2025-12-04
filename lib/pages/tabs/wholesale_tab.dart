@@ -1,14 +1,12 @@
 import 'package:market_price/builders/refresh_builder/refresh_ui_builder.dart';
 import 'package:market_price/builders/request_button/request_button_bloc.dart';
-import 'package:market_price/core/network/dio_basenetwork.dart';
 import 'package:market_price/core/ob/cities_ob.dart';
 import 'package:market_price/core/ob/fuel_wholesale_prices_list_ob.dart';
 import 'package:market_price/widgets/my_card.dart';
 
 import '../../builders/single_ui_builder/single_ui_builder.dart';
-import '../../core/ob/response_ob.dart';
 import '../../global.dart';
-import '../home/weekly_fuel_chart_syncfu.dart';
+import '../home/fl_chart_dynamic.dart';
 
 class WholesaleTab extends StatefulWidget {
   const WholesaleTab({super.key});
@@ -24,52 +22,52 @@ class _WholesaleTabState extends State<WholesaleTab> {
 
   RequestButtonBloc bloc = RequestButtonBloc();
 
-  initCity() async {
-    bloc.postData('city', requestType: ReqType.Get, map: {'type': '15'});
-
-    bloc.getRequestStream().listen((ResponseOb res) {
-      if (res.message == MsgState.data) {
-        print("Data --> ${res.data}");
-        print("Data --> ${res.data.runtimeType}");
-
-        Map<String, dynamic> map = res.data;
-
-        List<CitiesData> cityList = List<CitiesData>.from(
-          (map["data"] as List).map((e) => CitiesData.fromJson(e)),
-        );
-
-        CitiesData? yangonCity = cityList.firstWhere(
-          (city) =>
-              city.cityName!.contains("Yangon") ||
-              city.cityName!.contains("ရန်ကုန်"),
-          orElse: () => CitiesData(), // မတွေ့ရင် null ပြန်မယ်
-        );
-
-        print(yangonCity.cityId.toString() + " -------> ID");
-
-        if (yangonCity != null) {
-          print("တွေ့ပြီ: ${yangonCity.cityName} - ID: ${yangonCity.cityId}");
-          setState(() {
-            citiesData = yangonCity;
-          });
-          refreshKey.currentState!.func(
-            map: {
-              "city_id": yangonCity.cityId ?? "",
-              'date': _formatDate(selectedDate),
-            },
-          );
-        } else {
-          print("ရန်ကုန် မတွေ့ပါ");
-        }
-      }
-    });
-  }
+  // initCity() async {
+  //   bloc.postData('city', requestType: ReqType.Get, map: {'type': '15'});
+  //
+  //   bloc.getRequestStream().listen((ResponseOb res) {
+  //     if (res.message == MsgState.data) {
+  //       print("Data --> ${res.data}");
+  //       print("Data --> ${res.data.runtimeType}");
+  //
+  //       Map<String, dynamic> map = res.data;
+  //
+  //       List<CitiesData> cityList = List<CitiesData>.from(
+  //         (map["data"] as List).map((e) => CitiesData.fromJson(e)),
+  //       );
+  //
+  //       CitiesData? yangonCity = cityList.firstWhere(
+  //         (city) =>
+  //             city.cityName!.contains("Yangon") ||
+  //             city.cityName!.contains("ရန်ကုန်"),
+  //         orElse: () => CitiesData(), // မတွေ့ရင် null ပြန်မယ်
+  //       );
+  //
+  //       print(yangonCity.cityId.toString() + " -------> ID");
+  //
+  //       if (yangonCity != null) {
+  //         print("တွေ့ပြီ: ${yangonCity.cityName} - ID: ${yangonCity.cityId}");
+  //         setState(() {
+  //           citiesData = yangonCity;
+  //         });
+  //         refreshKey.currentState!.func(
+  //           map: {
+  //             "city_id": yangonCity.cityId ?? "",
+  //             'date': _formatDate(selectedDate),
+  //           },
+  //         );
+  //       } else {
+  //         print("ရန်ကုန် မတွေ့ပါ");
+  //       }
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    initCity();
+    // initCity();
   }
 
   @override
@@ -114,7 +112,7 @@ class _WholesaleTabState extends State<WholesaleTab> {
             url: 'fuel-price/fuel-wholesale-price',
             map: {
               "date": _formatDate(selectedDate),
-              "city_id": citiesData == null ? "" : citiesData!.cityId,
+              // "city_id": citiesData == null ? "" : citiesData!.cityId,
             },
             childWidget: (dynamic data, RefreshLoad func, bool? isList) {
               FuelWholesalePricesData wpData = data as FuelWholesalePricesData;
@@ -159,7 +157,15 @@ class _WholesaleTabState extends State<WholesaleTab> {
           _fuelRow("HSD(50 ppm)", data.hsd50PpmPrice ?? "0"),
           _fuelRow("HSD(10 ppm)", data.hsd10PpmPrice ?? "0"),
           SizedBox(height: 10),
-          FuelChartDynamic(chartData: data.chart),
+          // FuelChartDynamic(chartData: data.chart),
+          Container(
+            // color: Colors.grey.shade100,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height / 2.4,
+              width: MediaQuery.of(context).size.width,
+              child: FuelChartDynamicFL(chartData: data.chart),
+            ),
+          ),
         ],
       ),
     );
@@ -172,7 +178,7 @@ class _WholesaleTabState extends State<WholesaleTab> {
     final unit = parts.length > 1 ? parts.sublist(1).join(' ') : 'MMK/L';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         children: [
           Expanded(
@@ -271,11 +277,13 @@ class _WholesaleTabState extends State<WholesaleTab> {
               child: Row(
                 children: [
                   citiesData == null
-                      ? Text(
-                          "All",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                      ? Expanded(
+                          child: Text(
+                            "All City",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         )
                       : Expanded(
@@ -335,7 +343,7 @@ class _WholesaleTabState extends State<WholesaleTab> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "မြို့ရွေးချယ်ပါ",
+                              "Select City",
                               style: TextStyle(
                                 fontSize: 21,
                                 fontWeight: FontWeight.bold,
@@ -361,7 +369,9 @@ class _WholesaleTabState extends State<WholesaleTab> {
                         children: [
                           InkWell(
                             onTap: () {
-                              refreshKey.currentState!.func();
+                              refreshKey.currentState!.func(
+                                map: {"date": _formatDate(selectedDate)},
+                              );
                               context.back();
                             },
                             child: Container(
@@ -387,7 +397,7 @@ class _WholesaleTabState extends State<WholesaleTab> {
                                 ],
                               ),
                               child: Text(
-                                "All",
+                                "All City",
                                 style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600,

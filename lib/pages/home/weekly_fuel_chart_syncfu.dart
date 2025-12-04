@@ -30,7 +30,9 @@ class FuelChartDynamic extends StatelessWidget {
         legend: const Legend(isVisible: true, position: LegendPosition.top),
         primaryXAxis: const CategoryAxis(
           majorGridLines: MajorGridLines(width: 0),
-          labelRotation: -30,
+          labelRotation: 0,
+          // arrangeByIndex: true,
+          // maximumLabels: 3,
         ),
 
         tooltipBehavior: TooltipBehavior(enable: true, shared: true),

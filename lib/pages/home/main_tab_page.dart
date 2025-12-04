@@ -55,7 +55,7 @@ class _MainTabsPageState extends State<MainTabsPage>
     return Scaffold(
       appBar: AppUtils.MyAppBar(
         context: context,
-        title: 'Market Watch',
+        title: 'Fuel Price',
         actions: [
           IconButton(
             onPressed: () {
@@ -63,6 +63,12 @@ class _MainTabsPageState extends State<MainTabsPage>
             },
             icon: const Icon(CupertinoIcons.settings_solid),
           ),
+          // IconButton(
+          //   onPressed: () {
+          //     context.to(Test());
+          //   },
+          //   icon: Icon(Icons.add),
+          // ),
         ],
       ),
       body: Padding(
